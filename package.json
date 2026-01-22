@@ -1,0 +1,21 @@
+{
+  "name": "threejs-storage",
+  "version": "1.0.0",
+  "description": "This is the project made with three.js",
+  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "(index.js)"
+  },
+  "license": "ISC",
+  "author": "Lynn",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "three": "^0.182.0",
+    "vite": "^7.3.1"
+  }
+}
