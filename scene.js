@@ -5,33 +5,34 @@ import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
 import gsap from "gsap";
 
-
+// ==============================
 // SCENE & CAMERA
-
+// ==============================
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x202020);
 
 const camera = new THREE.PerspectiveCamera(70, window.innerWidth/window.innerHeight, 0.1, 100);
 camera.position.set(0,2,8);
 
+// ==============================
 // RENDERER
-
+// ==============================
 const canvas = document.querySelector("#canvasThree");
 const renderer = new THREE.WebGLRenderer({ canvas, antialias:true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
 renderer.shadowMap.enabled = true;
 
-
+// ==============================
 // CONTROLS
-
+// ==============================
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.05;
 
-
+// ==============================
 // LIGHTS
-
+// ==============================
 const ambientLight = new THREE.AmbientLight(0xffffff,1.2);
 scene.add(ambientLight);
 
@@ -40,9 +41,9 @@ directionalLight.position.set(5,5,5);
 directionalLight.castShadow = true;
 scene.add(directionalLight);
 
-
-// TorusKnot 
-
+// ==============================
+// TorusKnot – Glasartig
+// ==============================
 const knotMaterial = new THREE.MeshPhysicalMaterial({
   color:0xffffff,
   metalness:0,
@@ -59,9 +60,9 @@ const knot = new THREE.Mesh(knotGeometry,knotMaterial);
 knot.castShadow = true;
 scene.add(knot);
 
-
+// ==============================
 // GLTF Loader
-
+// ==============================
 const gltfLoader = new GLTFLoader();
 
 // Flower02
@@ -105,9 +106,9 @@ gltfLoader.load("/Blume_object/Blume_fuer_three_js.glb", gltf=>{
   });
 });
 
-
+// ==============================
 // Particle-System
-
+// ==============================
 const particleCount = 2000;
 const particlesGeometry = new THREE.BufferGeometry();
 const positions = [];
@@ -138,7 +139,7 @@ const particles = new THREE.Points(particlesGeometry,particlesMaterial);
 scene.add(particles);
 const particleRotationSpeed = 0.01;
 
-
+// ==============================
 // 3D Text
 let rotatingText = null;
 const fontLoader = new FontLoader();
@@ -147,32 +148,34 @@ fontLoader.load("/fonts/helvetiker_regular.typeface.json", font=>{
   const mat = new THREE.MeshStandardMaterial({ color:0xffffff });
   rotatingText = new THREE.Mesh(geom, mat);
 
+  // BoundingBox und Zentrierung
   geom.computeBoundingBox();
-  const centerX = (geom.boundingBox.max.x + geom.boundingBox.min.x)/2;
-  const centerZ = (geom.boundingBox.max.z + geom.boundingBox.min.z)/2;
+  const bbox = geom.boundingBox;
+  const maxDim = Math.max(bbox.max.x - bbox.min.x, bbox.max.y - bbox.min.y, bbox.max.z - bbox.min.z);
 
-  rotatingText.position.set(
-    knot.position.x - centerX,
-    knot.position.y + 1,
-    knot.position.z - centerZ
-  );
+  // Skalierung proportional
+  const scaleFactor = 1 / maxDim * 1.2; // 1.2 = etwas größer
+  rotatingText.scale.setScalar(scaleFactor);
+
+  // Position initial
+  rotatingText.position.set(knot.position.x, knot.position.y + 1, knot.position.z);
 
   rotatingText.visible = false;
   scene.add(rotatingText);
 });
 
-
+// ==============================
 // Kamera Ziele
-
+// ==============================
 const cameraTargets = {
   flowerGroup1:{position:new THREE.Vector3(0,2,8), lookAt:flowerGroup1.position},
   flowerGroup02:{position:new THREE.Vector3(0,2,5), lookAt:flowerGroup02.position},
   knot:{position:new THREE.Vector3(3,2,8), lookAt:knot.position},
 };
 
-
+// ==============================
 // Kamera Bewegung
-
+// ==============================
 function moveCamera(target){
   controls.enableDamping=false;
   gsap.killTweensOf(camera.position);
@@ -196,22 +199,26 @@ function moveCamera(target){
     ease:"power2.inOut"
   });
 }
+
+// ==============================
 // Buttons Events
+// ==============================
 document.getElementById("btnFlower1")?.addEventListener("click",()=>moveCamera(cameraTargets.flowerGroup1));
 document.getElementById("btnFlower02")?.addEventListener("click",()=>moveCamera(cameraTargets.flowerGroup02));
 document.getElementById("btnKnot")?.addEventListener("click",()=>moveCamera(cameraTargets.knot));
 
-// Text Button
+// Text Button → sichtbar + animiert
 let textOrbitRadius = 3.5;
 let textOrbitAngle = 0;
 document.getElementById("btnTextAnimate")?.addEventListener("click", ()=>{
   if(!rotatingText) return;
   rotatingText.visible = true;
-  gsap.fromTo(rotatingText.scale, {x:0.1,y:0.1,z:0.1}, {x:1,y:1,z:1,duration:0.5,ease:"back.out(1.7)"});
+  gsap.fromTo(rotatingText.scale, {x:0.1,y:0.1,z:0.1}, {x:rotatingText.scale.x,y:rotatingText.scale.y,z:rotatingText.scale.z,duration:0.5,ease:"back.out(1.7)"});
 });
 
-
+// ==============================
 // Animate Loop
+// ==============================
 function animate(){
   knot.rotation.x +=0.01;
   knot.rotation.y +=0.01;
@@ -230,8 +237,9 @@ function animate(){
 }
 animate();
 
-
+// ==============================
 // Window Resize
+// ==============================
 window.addEventListener("resize", ()=>{
   camera.aspect=window.innerWidth/window.innerHeight;
   camera.updateProjectionMatrix();
