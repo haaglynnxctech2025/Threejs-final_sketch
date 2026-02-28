@@ -67,7 +67,7 @@ const gltfLoader = new GLTFLoader();
 // Flower02
 const flowerGroup02 = new THREE.Group();
 scene.add(flowerGroup02);
-gltfLoader.load("Blume02/blume02.glb", gltf=>{
+gltfLoader.load("/Blume02/blume02.glb", gltf=>{
   const model = gltf.scene;
   model.scale.set(1,1,1);
   model.position.set(0,0,0);
@@ -93,7 +93,7 @@ const flowerData = [
   { pos:new THREE.Vector3(1,0,1), rot:new THREE.Euler(0,-Math.PI/4,0) }
 ];
 
-gltfLoader.load("Blume_object/Blume_fuer_three_js.glb", gltf=>{
+gltfLoader.load("/Blume_object/Blume_fuer_three_js.glb", gltf=>{
   const model = gltf.scene;
   flowerData.forEach(({pos,rot})=>{
     const clone = model.clone();
@@ -124,7 +124,7 @@ for(let i=0;i<particleCount;i++){
 particlesGeometry.setAttribute("position",new THREE.Float32BufferAttribute(positions,3));
 
 let particleTexture = null;
-try{ particleTexture = new THREE.TextureLoader().load("textures/circle.png"); }catch{}
+try{ particleTexture = new THREE.TextureLoader().load("/textures/circle.png"); }catch{}
 const particlesMaterial = new THREE.PointsMaterial({
   color:0xffffff,
   size:0.06,
@@ -142,7 +142,7 @@ const particleRotationSpeed = 0.01;
 // 3D Text
 let rotatingText = null;
 const fontLoader = new FontLoader();
-fontLoader.load("fonts/helvetiker_regular.typeface.json", font=>{
+fontLoader.load("/fonts/helvetiker_regular.typeface.json", font=>{
   const geom = new TextGeometry("Hi! Welcome to my brain.", { font, size:0.2, height:0.05, curveSegments:12 });
   const mat = new THREE.MeshStandardMaterial({ color:0xffffff });
   rotatingText = new THREE.Mesh(geom, mat);
@@ -201,7 +201,7 @@ document.getElementById("btnFlower1")?.addEventListener("click",()=>moveCamera(c
 document.getElementById("btnFlower02")?.addEventListener("click",()=>moveCamera(cameraTargets.flowerGroup02));
 document.getElementById("btnKnot")?.addEventListener("click",()=>moveCamera(cameraTargets.knot));
 
-// Text Button → sichtbar + Orbit
+// Text Button
 let textOrbitRadius = 3.5;
 let textOrbitAngle = 0;
 document.getElementById("btnTextAnimate")?.addEventListener("click", ()=>{
