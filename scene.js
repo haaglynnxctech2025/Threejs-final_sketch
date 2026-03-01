@@ -165,7 +165,7 @@ fontLoader.load("/fonts/helvetiker_regular.typeface.json", font => {
   rotatingText = new THREE.Mesh(geom, mat);
 
   // Position über TorusKnot
-  rotatingText.position.set(knot.position.x, knot.position.y + 1, knot.position.z);
+  rotatingText.position.set(knot.position.x, knot.position.y + 1, knot.position.z -2);
   rotatingText.visible = false;
   scene.add(rotatingText);
 });
