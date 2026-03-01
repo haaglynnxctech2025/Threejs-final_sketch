@@ -149,7 +149,7 @@ fontLoader.load("/fonts/helvetiker_regular.typeface.json", font => {
     font, 
     size: 0.5,       // Höhe
     height: 0.05,    // Tiefe flach halten
-    curveSegments: 12
+    curveSegments: 0.5
   });
 
   // BoundingBox zentrieren
