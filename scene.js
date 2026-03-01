@@ -148,8 +148,8 @@ fontLoader.load("/fonts/helvetiker_regular.typeface.json", font => {
   const geom = new TextGeometry("Hi! Welcome to my brain.", { 
     font, 
     size: 0.5, 
-    height: 0.05, 
-    curveSegments: 6 
+    height: 0.5, 
+    curveSegments: 12 
   });
 
   // BoundingBox nur für X/Y zur Zentrierung
@@ -166,7 +166,7 @@ fontLoader.load("/fonts/helvetiker_regular.typeface.json", font => {
   rotatingText.position.set(
     knot.position.x, 
     knot.position.y + 1, 
-    knot.position.z - 3  // <- Text 3 Einheiten von der Kamera weiter weg
+    knot.position.z - 10  // <- Text 3 Einheiten von der Kamera weiter weg
   );
   rotatingText.visible = false;
   scene.add(rotatingText);
