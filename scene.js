@@ -112,9 +112,9 @@ gltfLoader.load("/Blume_object/Blume_fuer_three_js.glb", gltf => {
 const particleCount = 2000;
 const particlesGeometry = new THREE.BufferGeometry();
 const positions = [];
-for(let i=0; i<particleCount; i++){
+for(let i=0;i<particleCount;i++){
   const r = THREE.MathUtils.randFloat(2,10);
-  const angle = THREE.MathUtils.randFloat(0, Math.PI*2);
+  const angle = THREE.MathUtils.randFloat(0,Math.PI*2);
   const y = THREE.MathUtils.randFloat(-0.3,0.3);
   positions.push(
     flowerGroup02.position.x + Math.cos(angle)*r,
@@ -125,7 +125,7 @@ for(let i=0; i<particleCount; i++){
 particlesGeometry.setAttribute("position", new THREE.Float32BufferAttribute(positions,3));
 
 let particleTexture = null;
-try { particleTexture = new THREE.TextureLoader().load("/textures/circle.png"); } catch {}
+try{ particleTexture = new THREE.TextureLoader().load("/textures/circle.png"); }catch{}
 const particlesMaterial = new THREE.PointsMaterial({
   color:0xffffff,
   size:0.06,
@@ -140,32 +140,34 @@ scene.add(particles);
 const particleRotationSpeed = 0.01;
 
 // ==============================
-// 3D Text – fix für lesbar & proportioniert
+// 3D Text – zentriert & proportional, weiter hinten
 // ==============================
 let rotatingText = null;
 const fontLoader = new FontLoader();
 fontLoader.load("/fonts/helvetiker_regular.typeface.json", font => {
   const geom = new TextGeometry("Hi! Welcome to my brain.", { 
     font, 
-    size: 0.5,       // Höhe
-    height: 0.05,    // Tiefe flach halten
-    curveSegments: 0.5
+    size: 0.5, 
+    height: 0.05, 
+    curveSegments: 6 
   });
 
-  // BoundingBox zentrieren
+  // BoundingBox nur für X/Y zur Zentrierung
   geom.computeBoundingBox();
   const bbox = geom.boundingBox;
-  geom.translate(
-    - (bbox.max.x + bbox.min.x)/2,
-    - (bbox.max.y + bbox.min.y)/2,
-    - (bbox.max.z + bbox.min.z)/2
-  );
+  const centerX = (bbox.max.x + bbox.min.x)/2;
+  const centerY = (bbox.max.y + bbox.min.y)/2;
+  geom.translate(-centerX, -centerY, 0); // Z bleibt unverändert
 
   const mat = new THREE.MeshStandardMaterial({ color:0xffffff });
   rotatingText = new THREE.Mesh(geom, mat);
 
-  // Position über TorusKnot
-  rotatingText.position.set(knot.position.x, knot.position.y + 1, knot.position.z -20);
+  // Position Z weiter nach hinten
+  rotatingText.position.set(
+    knot.position.x, 
+    knot.position.y + 1, 
+    knot.position.z - 3  // <- Text 3 Einheiten von der Kamera weiter weg
+  );
   rotatingText.visible = false;
   scene.add(rotatingText);
 });
@@ -228,15 +230,15 @@ document.getElementById("btnTextAnimate")?.addEventListener("click", ()=>{
 // Animate Loop
 // ==============================
 function animate(){
-  knot.rotation.x +=0.01;
-  knot.rotation.y +=0.01;
+  knot.rotation.x += 0.01;
+  knot.rotation.y += 0.01;
   particles.rotation.y += particleRotationSpeed;
 
   if(rotatingText && rotatingText.visible){
     textOrbitAngle += 0.01;
     rotatingText.position.x = knot.position.x + Math.cos(textOrbitAngle) * textOrbitRadius;
     rotatingText.position.z = knot.position.z + Math.sin(textOrbitAngle) * textOrbitRadius;
-    rotatingText.position.y = knot.position.y + 1; // Y konstant, Text nicht kippen
+    rotatingText.position.y = knot.position.y + 1;
   }
 
   controls.update();
