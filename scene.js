@@ -140,31 +140,38 @@ scene.add(particles);
 const particleRotationSpeed = 0.01;
 
 // ==============================
-// 3D Text – fix für proportioniert & zentriert
+// 3D Text – fix für lesbar & proportional
 // ==============================
 let rotatingText = null;
 const fontLoader = new FontLoader();
 fontLoader.load("/fonts/helvetiker_regular.typeface.json", font => {
   const geom = new TextGeometry("Hi! Welcome to my brain.", { 
     font, 
-    size: 0.5,       // Basisgröße
-    height: 0.5,    // flach, keine Verzerrung
-    curveSegments: 6 
+    size: 0.5,      // Lesbare Basisgröße
+    height: 0.05,   // flache Tiefe, verhindert Streckung
+    curveSegments: 12 
   });
 
+  // BoundingBox berechnen
   geom.computeBoundingBox();
   const bbox = geom.boundingBox;
 
-  // Zentrieren
-  const centerX = (bbox.max.x + bbox.min.x)/2;
-  const centerY = (bbox.max.y + bbox.min.y)/2;
-  const centerZ = (bbox.max.z + bbox.min.z)/2;
+  // Zentrieren auf allen Achsen
+  const centerX = (bbox.max.x + bbox.min.x) / 2;
+  const centerY = (bbox.max.y + bbox.min.y) / 2;
+  const centerZ = (bbox.max.z + bbox.min.z) / 2;
   geom.translate(-centerX, -centerY, -centerZ);
 
+  // Material
   const mat = new THREE.MeshStandardMaterial({ color:0xffffff });
   rotatingText = new THREE.Mesh(geom, mat);
 
+  // Position über Knot
   rotatingText.position.set(knot.position.x, knot.position.y + 1, knot.position.z);
+
+  // Einheitliche Skalierung (X=Y=Z)
+  rotatingText.scale.setScalar(1);
+
   rotatingText.visible = false;
   scene.add(rotatingText);
 });
