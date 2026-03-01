@@ -148,7 +148,7 @@ fontLoader.load("/fonts/helvetiker_regular.typeface.json", font => {
   const geom = new TextGeometry("Hi! Welcome to my brain.", { 
     font, 
     size: 0.5,       // Basisgröße
-    height: 0.05,    // flach, keine Verzerrung
+    height: 0.5,    // flach, keine Verzerrung
     curveSegments: 6 
   });
 
