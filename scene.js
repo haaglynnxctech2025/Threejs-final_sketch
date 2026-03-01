@@ -149,7 +149,7 @@ fontLoader.load("/fonts/helvetiker_regular.typeface.json", font => {
     font, 
     size: 0.5,       // Basisgröße
     height: 0.05,    // flach, keine Verzerrung
-    curveSegments: 12 
+    curveSegments: 6 
   });
 
   geom.computeBoundingBox();
